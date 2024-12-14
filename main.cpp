@@ -176,7 +176,7 @@ int main() {
   bool uncertain_places = false;
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
-      std::cout << (board[i][j] == 1 ? '#' : board[i][j] == 2 ? '.' : '?');
+      std::cout << (j==0?"":" ")<<(board[i][j] == 1 ? '#' : board[i][j] == 2 ? '.' : '?');
       if (board[i][j] == 0)
         uncertain_places = true;
     }
