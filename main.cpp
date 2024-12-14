@@ -123,7 +123,7 @@ int main() {
         else{
           if(board[i][j]==next[j])continue;
           else {
-            std::cout<<"confict\n";
+            std::cout<<"conflict\n";
             return 0;
           }
         }
