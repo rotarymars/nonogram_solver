@@ -7,7 +7,7 @@
 #include <thread>
 #include <vector>
 #define ANIMATION
-#define ANIMATION_DELAY_MILLISECONDS 1
+#define ANIMATION_DELAY_MILLISECONDS 0
 std::vector<std::vector<int>> genlist(const std::vector<int> &info,
                                       const std::vector<int> &now) {
   if (info.size() == 0) {
