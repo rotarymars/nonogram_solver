@@ -1,13 +1,13 @@
-#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <cstdio>
 #include <iostream>
-#include <numeric>
 #include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
+#define ANIMATION
+#define ANIMATION_DELAY_MILLISECONDS 1
 std::vector<std::vector<int>> genlist(const std::vector<int> &info,
                                       const std::vector<int> &now) {
   if (info.size() == 0) {
@@ -31,7 +31,17 @@ std::vector<std::vector<int>> genlist(const std::vector<int> &info,
         push_back_element[j] = 1;
       }
     }
-    ret.push_back(push_back_element);
+    bool flag = true;
+    for (int i = 0; i < (int)now.size(); ++i) {
+      if (now[i] == 0)
+        continue;
+      if (now[i] == push_back_element[i])
+        continue;
+      flag = false;
+      break;
+    }
+    if (flag)
+      ret.push_back(push_back_element);
     int turn_back_point = -1;
     for (int i = info.size() - 1; i >= 0; --i) {
       if (nowindex[i] >= maxindex[i])
@@ -50,18 +60,6 @@ std::vector<std::vector<int>> genlist(const std::vector<int> &info,
       }
     }
   }
-  ret.erase(std::remove_if(ret.begin(), ret.end(),
-                           [&](const std::vector<int> &v) -> bool {
-                             for (int i = 0; i < (int)now.size(); ++i) {
-                               if (now[i] == 0)
-                                 continue;
-                               if (now[i] == v[i])
-                                 continue;
-                               return true;
-                             }
-                             return false;
-                           }),
-            ret.end());
   return ret;
 }
 int main() {
@@ -129,6 +127,29 @@ int main() {
           }
         }
       }
+      #ifdef ANIMATION
+      for(int j=0;j<2*w;++j){
+        std::cout<<' ';
+      }
+      std::cout<<'\n';
+      for (int j = 0; j < h; ++j) {
+        if(i==j){
+          std::cout<<"!";
+        }
+        else{
+          std::cout<<" ";
+        }
+        for (int k = 0; k < w; ++k) {
+          std::cout << (k == 0 ? "" : " ")
+                    << (board[j][k] == 1   ? '#'
+                        : board[j][k] == 2 ? '.'
+                                           : '?');
+        }
+        std::cout << '\n';
+      }
+      std::cout << '\r' << "\033[" << h+1 << 'A';
+      std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
+      #endif
     }
     for (int i = 0; i < w; ++i) {
       std::vector<int> verticalboard(h);
@@ -169,22 +190,50 @@ int main() {
           }
         }
       }
+      #ifdef ANIMATION
+      std::cout<<' ';
+      for(int j=0;j<w;++j){
+        if(i==j){
+          std::cout<<"! ";
+        }
+        else{
+          std::cout<<"  ";
+        }
+      }
+      std::cout<<'\n';
+      for (int j = 0; j < h; ++j) {
+        std::cout<<' ';
+        for (int k = 0; k < w; ++k) {
+          std::cout << (k == 0 ? "" : " ")
+                    << (board[j][k] == 1   ? '#'
+                        : board[j][k] == 2 ? '.'
+                                           : '?');
+        }
+        std::cout << '\n';
+      }
+      std::cout << '\r' << "\033[" << h + 1 << 'A';
+      std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
+      #endif
     }
     if (!ismodified)
       break;
-    for(int i=0;i<h;++i){
-      for(int j=0;j<w;++j){
-        std::cout<<(j==0?"":" ")<<(board[i][j]==1?'#':board[i][j]==2?'.':'?');
-      }
-      std::cout<<'\n';
-    }
-    std::cout<<'\r'<<"\033["<<h<<'A';
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
+  #ifdef ANIMATION
+  for(int i=0;i<h+1;++i){
+    for(int j=0;j<2*(w+1);++j){
+      std::cout<<' ';
+    }
+    std::cout<<'\n';
+  }
+  std::cout<<'\r'<<"\033["<<h+1<<'A';
+  #endif
   bool uncertain_places = false;
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
-      std::cout << (j==0?"":" ")<<(board[i][j] == 1 ? '#' : board[i][j] == 2 ? '.' : '?');
+      std::cout << (j == 0 ? "" : " ")
+                << (board[i][j] == 1   ? '#'
+                    : board[i][j] == 2 ? '.'
+                                       : '?');
       if (board[i][j] == 0)
         uncertain_places = true;
     }

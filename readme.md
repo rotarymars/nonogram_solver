@@ -15,4 +15,4 @@ Look at the samples that I made (cu.txt, face.txt)
 # program
 There is an animation while solving (by default). 
 
-If you do not need it, comment out the lines from 175 to 182.
+If you do not need it, undefine ANIMATION.
