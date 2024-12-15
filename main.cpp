@@ -13,6 +13,11 @@ std::vector<std::vector<int>> genlist(const std::vector<int> &info,
   if (info.size() == 0) {
     return std::vector<std::vector<int>>(1, std::vector<int>(now.size(), 2));
   }
+  bool nothing=true;
+  for(auto&i:now){
+    if(i==0)nothing=false;
+  }
+  if(nothing)return std::vector<std::vector<int>>({now});
   std::vector<int> minindex(info.size()), maxindex(info.size());
   minindex[0] = 0;
   for (int i = 1; i < (int)info.size(); ++i) {
