@@ -172,6 +172,14 @@ int main() {
     }
     if (!ismodified)
       break;
+    for(int i=0;i<h;++i){
+      for(int j=0;j<w;++j){
+        std::cout<<(j==0?"":" ")<<(board[i][j]==1?'#':board[i][j]==2?'.':'?');
+      }
+      std::cout<<'\n';
+    }
+    std::cout<<'\r'<<"\033["<<h<<'A';
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
   bool uncertain_places = false;
   for (int i = 0; i < h; ++i) {
