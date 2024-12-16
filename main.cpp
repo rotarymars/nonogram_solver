@@ -13,11 +13,13 @@ std::vector<std::vector<int>> genlist(const std::vector<int> &info,
   if (info.size() == 0) {
     return std::vector<std::vector<int>>(1, std::vector<int>(now.size(), 2));
   }
-  bool nothing=true;
-  for(auto&i:now){
-    if(i==0)nothing=false;
+  bool nothing = true;
+  for (auto &i : now) {
+    if (i == 0)
+      nothing = false;
   }
-  if(nothing)return std::vector<std::vector<int>>({now});
+  if (nothing)
+    return std::vector<std::vector<int>>({now});
   std::vector<int> minindex(info.size()), maxindex(info.size());
   minindex[0] = 0;
   for (int i = 1; i < (int)info.size(); ++i) {
@@ -132,17 +134,16 @@ int main() {
           }
         }
       }
-      #ifdef ANIMATION
-      for(int j=0;j<2*w;++j){
-        std::cout<<' ';
+#ifdef ANIMATION
+      for (int j = 0; j < 2 * w; ++j) {
+        std::cout << ' ';
       }
-      std::cout<<'\n';
+      std::cout << '\n';
       for (int j = 0; j < h; ++j) {
-        if(i==j){
-          std::cout<<"!";
-        }
-        else{
-          std::cout<<" ";
+        if (i == j) {
+          std::cout << "!";
+        } else {
+          std::cout << " ";
         }
         for (int k = 0; k < w; ++k) {
           std::cout << (k == 0 ? "" : " ")
@@ -152,9 +153,10 @@ int main() {
         }
         std::cout << '\n';
       }
-      std::cout << '\r' << "\033[" << h+1 << 'A';
-      std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
-      #endif
+      std::cout << '\r' << "\033[" << h + 1 << 'A';
+      std::this_thread::sleep_for(
+          std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
+#endif
     }
     for (int i = 0; i < w; ++i) {
       std::vector<int> verticalboard(h);
@@ -195,19 +197,18 @@ int main() {
           }
         }
       }
-      #ifdef ANIMATION
-      std::cout<<' ';
-      for(int j=0;j<w;++j){
-        if(i==j){
-          std::cout<<"! ";
-        }
-        else{
-          std::cout<<"  ";
+#ifdef ANIMATION
+      std::cout << ' ';
+      for (int j = 0; j < w; ++j) {
+        if (i == j) {
+          std::cout << "! ";
+        } else {
+          std::cout << "  ";
         }
       }
-      std::cout<<'\n';
+      std::cout << '\n';
       for (int j = 0; j < h; ++j) {
-        std::cout<<' ';
+        std::cout << ' ';
         for (int k = 0; k < w; ++k) {
           std::cout << (k == 0 ? "" : " ")
                     << (board[j][k] == 1   ? '#'
@@ -217,21 +218,22 @@ int main() {
         std::cout << '\n';
       }
       std::cout << '\r' << "\033[" << h + 1 << 'A';
-      std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
-      #endif
+      std::this_thread::sleep_for(
+          std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
+#endif
     }
     if (!ismodified)
       break;
   }
-  #ifdef ANIMATION
-  for(int i=0;i<h+1;++i){
-    for(int j=0;j<2*(w+1);++j){
-      std::cout<<' ';
+#ifdef ANIMATION
+  for (int i = 0; i < h + 1; ++i) {
+    for (int j = 0; j < 2 * (w + 1); ++j) {
+      std::cout << ' ';
     }
-    std::cout<<'\n';
+    std::cout << '\n';
   }
-  std::cout<<'\r'<<"\033["<<h+1<<'A';
-  #endif
+  std::cout << '\r' << "\033[" << h + 1 << 'A';
+#endif
   bool uncertain_places = false;
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
