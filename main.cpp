@@ -7,7 +7,12 @@
 #include <thread>
 #include <vector>
 #define ANIMATION
-#define ANIMATION_DELAY_MILLISECONDS 0
+#define ANIMATION_DELAY_MILLISECONDS 1000
+void sleepfor_animationdelaymilliseconds() {
+  std::this_thread::sleep_for(
+      std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
+  return;
+}
 std::vector<std::vector<int>> genlist(const std::vector<int> &info,
                                       const std::vector<int> &now) {
   if (info.size() == 0) {
@@ -101,6 +106,7 @@ int main() {
   while (true) {
     ismodified = false;
     for (int i = 0; i < h; ++i) {
+      std::thread th(sleepfor_animationdelaymilliseconds);
       auto avaliblelist = std::move(genlist(hinfo[i], board[i]));
       std::vector<int> next(w, 0);
       for (int j = 0; j < w; ++j) {
@@ -154,15 +160,15 @@ int main() {
         std::cout << '\n';
       }
       std::cout << '\r' << "\033[" << h + 1 << 'A';
-      std::this_thread::sleep_for(
-          std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
 #endif
+      th.join();
     }
     for (int i = 0; i < w; ++i) {
       std::vector<int> verticalboard(h);
       for (int j = 0; j < h; ++j) {
         verticalboard[j] = board[j][i];
       }
+      std::thread th(sleepfor_animationdelaymilliseconds);
       auto availiblelist = std::move(genlist(winfo[i], verticalboard));
       std::vector<int> next(h, 0);
       for (int j = 0; j < h; ++j) {
@@ -218,9 +224,8 @@ int main() {
         std::cout << '\n';
       }
       std::cout << '\r' << "\033[" << h + 1 << 'A';
-      std::this_thread::sleep_for(
-          std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
 #endif
+      th.join();
     }
     if (!ismodified)
       break;
