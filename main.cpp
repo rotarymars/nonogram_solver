@@ -7,7 +7,7 @@
 #include <thread>
 #include <vector>
 #define ANIMATION
-#define ANIMATION_DELAY_MILLISECONDS 1000
+#define ANIMATION_DELAY_MILLISECONDS 100
 void sleepfor_animationdelaymilliseconds() {
   std::this_thread::sleep_for(
       std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
