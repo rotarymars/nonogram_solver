@@ -1,3 +1,5 @@
 *.out
 .clangd
 compile_flags.txt
+build/
+.vscode/
