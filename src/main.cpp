@@ -8,13 +8,8 @@
 #include <vector>
 
 using CellState = char;
-// #define ANIMATION
-#define ANIMATION_DELAY_MILLISECONDS 1
-void sleepfor_animationdelaymilliseconds() {
-  std::this_thread::sleep_for(
-      std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
-  return;
-}
+
+// Animation removed for simplicity
 std::vector<std::vector<CellState>> genlist(const std::vector<int> &info,
                                       const std::vector<CellState> &now) {
   if (info.size() == 0) {
@@ -76,40 +71,18 @@ std::vector<std::vector<CellState>> genlist(const std::vector<int> &info,
   }
   return ret;
 }
-int main() {
-  int h, w;
-  std::string line;
-  {
-    getline(std::cin, line);
-    std::istringstream stream(line);
-    stream >> h >> w;
-  }
-  // free: 0, iscolored: 1, isnotcolored: 2
+
+std::vector<std::vector<CellState>> solveNonogram(int h, int w,
+    const std::vector<std::vector<int>>& hinfo,
+    const std::vector<std::vector<int>>& winfo) {
+
   std::vector<std::vector<CellState>> board(h, std::vector<CellState>(w, 0));
-  std::vector<std::vector<int>> hinfo(h), winfo(w);
-  for (int i = 0; i < h; ++i) {
-    getline(std::cin, line);
-    std::istringstream stream(line);
-    int temp;
-    while (stream >> temp) {
-      hinfo[i].push_back(temp);
-    }
-  }
-  for (int i = 0; i < w; ++i) {
-    getline(std::cin, line);
-    std::istringstream stream(line);
-    int temp;
-    while (stream >> temp) {
-      winfo[i].push_back((temp));
-    }
-  }
-  std::cout << "solving" << std::endl;
   bool ismodified = false;
+
   while (true) {
     ismodified = false;
     for (int i = 0; i < h; ++i) {
-      std::thread th(sleepfor_animationdelaymilliseconds);
-      auto avaliblelist = std::move(genlist(hinfo[i], board[i]));
+      auto avaliblelist = genlist(hinfo[i], board[i]);
       std::vector<CellState> next(w, 0);
       for (int j = 0; j < w; ++j) {
         bool colored = false, notcolored = false;
@@ -134,44 +107,18 @@ int main() {
           board[i][j] = next[j];
           ismodified = true;
         } else {
-          if (board[i][j] == next[j])
-            continue;
-          else {
-            std::cout << "conflict\n";
-            return 0;
+          if (board[i][j] != next[j] && next[j] != 0) {
+            return board; // conflict
           }
         }
       }
-#ifdef ANIMATION
-      for (int j = 0; j < 2 * w; ++j) {
-        std::cout << ' ';
-      }
-      std::cout << '\n';
-      for (int j = 0; j < h; ++j) {
-        if (i == j) {
-          std::cout << "!";
-        } else {
-          std::cout << " ";
-        }
-        for (int k = 0; k < w; ++k) {
-          std::cout << (k == 0 ? "" : " ")
-                    << (board[j][k] == 1   ? '#'
-                        : board[j][k] == 2 ? '.'
-                                           : '?');
-        }
-        std::cout << '\n';
-      }
-      std::cout << '\r' << "\033[" << h + 1 << 'A';
-#endif
-      th.join();
     }
     for (int i = 0; i < w; ++i) {
       std::vector<CellState> verticalboard(h);
       for (int j = 0; j < h; ++j) {
         verticalboard[j] = board[j][i];
       }
-      std::thread th(sleepfor_animationdelaymilliseconds);
-      auto availiblelist = std::move(genlist(winfo[i], verticalboard));
+      auto availiblelist = genlist(winfo[i], verticalboard);
       std::vector<CellState> next(h, 0);
       for (int j = 0; j < h; ++j) {
         bool colored = false, notcolored = false;
@@ -197,60 +144,53 @@ int main() {
           board[j][i] = next[j];
           ismodified = true;
         } else {
-          if (board[j][i] == next[j]) {
-            continue;
-          } else {
-            std::cout << "conflict\n";
-            return 0;
+          if (board[j][i] != next[j] && next[j] != 0) {
+            return board; // conflict
           }
         }
       }
-#ifdef ANIMATION
-      std::cout << ' ';
-      for (int j = 0; j < w; ++j) {
-        if (i == j) {
-          std::cout << "! ";
-        } else {
-          std::cout << "  ";
-        }
-      }
-      std::cout << '\n';
-      for (int j = 0; j < h; ++j) {
-        std::cout << ' ';
-        for (int k = 0; k < w; ++k) {
-          std::cout << (k == 0 ? "" : " ")
-                    << (board[j][k] == 1   ? '#'
-                        : board[j][k] == 2 ? '.'
-                                           : '?');
-        }
-        std::cout << '\n';
-      }
-      std::cout << '\r' << "\033[" << h + 1 << 'A';
-#endif
-      th.join();
     }
     if (!ismodified)
       break;
   }
-#ifdef ANIMATION
-  for (int i = 0; i < h + 1; ++i) {
-    for (int j = 0; j < 2 * (w + 1); ++j) {
-      std::cout << ' ';
-    }
-    std::cout << '\n';
+  return board;
+}
+
+#ifndef NO_MAIN
+int main() {
+  int h, w;
+  std::string line;
+  {
+    getline(std::cin, line);
+    std::istringstream stream(line);
+    stream >> h >> w;
   }
-  std::cout << '\r' << "\033[" << h + 1 << 'A';
-#endif
-  bool uncertain_places = false;
+  std::vector<std::vector<int>> hinfo(h), winfo(w);
+  for (int i = 0; i < h; ++i) {
+    getline(std::cin, line);
+    std::istringstream stream(line);
+    int temp;
+    while (stream >> temp) {
+      hinfo[i].push_back(temp);
+    }
+  }
+  for (int i = 0; i < w; ++i) {
+    getline(std::cin, line);
+    std::istringstream stream(line);
+    int temp;
+    while (stream >> temp) {
+      winfo[i].push_back((temp));
+    }
+  }
+  auto board = solveNonogram(h, w, hinfo, winfo);
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
       std::cout << (j == 0 ? "" : " ")
                 << (board[i][j] == 1   ? '#'
                     : board[i][j] == 2 ? '.'
                                        : '?');
-      if (board[i][j] == 0)
-        uncertain_places = true;
     }
     std::cout << '\n';
   }
 }
+#endif
