@@ -6,17 +6,19 @@
 #include <string>
 #include <thread>
 #include <vector>
+
+using CellState = char;
 #define ANIMATION
-#define ANIMATION_DELAY_MILLISECONDS 1000
+#define ANIMATION_DELAY_MILLISECONDS 1
 void sleepfor_animationdelaymilliseconds() {
   std::this_thread::sleep_for(
       std::chrono::milliseconds(ANIMATION_DELAY_MILLISECONDS));
   return;
 }
-std::vector<std::vector<int>> genlist(const std::vector<int> &info,
-                                      const std::vector<int> &now) {
+std::vector<std::vector<CellState>> genlist(const std::vector<int> &info,
+                                      const std::vector<CellState> &now) {
   if (info.size() == 0) {
-    return std::vector<std::vector<int>>(1, std::vector<int>(now.size(), 2));
+    return std::vector<std::vector<CellState>>(1, std::vector<CellState>(now.size(), 2));
   }
   bool nothing = true;
   for (auto &i : now) {
@@ -24,7 +26,7 @@ std::vector<std::vector<int>> genlist(const std::vector<int> &info,
       nothing = false;
   }
   if (nothing)
-    return std::vector<std::vector<int>>({now});
+    return std::vector<std::vector<CellState>>({now});
   std::vector<int> minindex(info.size()), maxindex(info.size());
   minindex[0] = 0;
   for (int i = 1; i < (int)info.size(); ++i) {
@@ -35,9 +37,9 @@ std::vector<std::vector<int>> genlist(const std::vector<int> &info,
     maxindex[i] = maxindex[i + 1] - info[i] - 1;
   }
   std::vector nowindex = minindex;
-  std::vector<std::vector<int>> ret;
+  std::vector<std::vector<CellState>> ret;
   while (true) {
-    std::vector<int> push_back_element(now.size(), 2);
+    std::vector<CellState> push_back_element(now.size(), 2);
     for (int i = 0; i < (int)info.size(); ++i) {
       for (int j = nowindex[i]; j < nowindex[i] + info[i]; ++j) {
         push_back_element[j] = 1;
@@ -83,7 +85,7 @@ int main() {
     stream >> h >> w;
   }
   // free: 0, iscolored: 1, isnotcolored: 2
-  std::vector<std::vector<int>> board(h, std::vector<int>(w, 0));
+  std::vector<std::vector<CellState>> board(h, std::vector<CellState>(w, 0));
   std::vector<std::vector<int>> hinfo(h), winfo(w);
   for (int i = 0; i < h; ++i) {
     getline(std::cin, line);
@@ -108,7 +110,7 @@ int main() {
     for (int i = 0; i < h; ++i) {
       std::thread th(sleepfor_animationdelaymilliseconds);
       auto avaliblelist = std::move(genlist(hinfo[i], board[i]));
-      std::vector<int> next(w, 0);
+      std::vector<CellState> next(w, 0);
       for (int j = 0; j < w; ++j) {
         bool colored = false, notcolored = false;
         for (int k = 0; k < (int)avaliblelist.size(); ++k) {
@@ -164,13 +166,13 @@ int main() {
       th.join();
     }
     for (int i = 0; i < w; ++i) {
-      std::vector<int> verticalboard(h);
+      std::vector<CellState> verticalboard(h);
       for (int j = 0; j < h; ++j) {
         verticalboard[j] = board[j][i];
       }
       std::thread th(sleepfor_animationdelaymilliseconds);
       auto availiblelist = std::move(genlist(winfo[i], verticalboard));
-      std::vector<int> next(h, 0);
+      std::vector<CellState> next(h, 0);
       for (int j = 0; j < h; ++j) {
         bool colored = false, notcolored = false;
         for (int k = 0; k < (int)availiblelist.size(); ++k) {
