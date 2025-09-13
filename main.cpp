@@ -8,7 +8,7 @@
 #include <vector>
 
 using CellState = char;
-#define ANIMATION
+// #define ANIMATION
 #define ANIMATION_DELAY_MILLISECONDS 1
 void sleepfor_animationdelaymilliseconds() {
   std::this_thread::sleep_for(
