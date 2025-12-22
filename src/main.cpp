@@ -9,7 +9,6 @@
 
 using CellState = char;
 
-// Animation removed for simplicity
 std::vector<std::vector<CellState>> genlist(const std::vector<int> &info,
                                             const std::vector<CellState> &now) {
   if (info.size() == 0) {
@@ -109,7 +108,7 @@ solveNonogram(int h, int w, const std::vector<std::vector<int>> &hinfo,
           ismodified = true;
         } else {
           if (board[i][j] != next[j] && next[j] != 0) {
-            return board; // conflict
+            return board;
           }
         }
       }
@@ -146,7 +145,7 @@ solveNonogram(int h, int w, const std::vector<std::vector<int>> &hinfo,
           ismodified = true;
         } else {
           if (board[j][i] != next[j] && next[j] != 0) {
-            return board; // conflict
+            return board;
           }
         }
       }
