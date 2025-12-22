@@ -11,9 +11,10 @@ using CellState = char;
 
 // Animation removed for simplicity
 std::vector<std::vector<CellState>> genlist(const std::vector<int> &info,
-                                      const std::vector<CellState> &now) {
+                                            const std::vector<CellState> &now) {
   if (info.size() == 0) {
-    return std::vector<std::vector<CellState>>(1, std::vector<CellState>(now.size(), 2));
+    return std::vector<std::vector<CellState>>(
+        1, std::vector<CellState>(now.size(), 2));
   }
   bool nothing = true;
   for (auto &i : now) {
@@ -72,9 +73,9 @@ std::vector<std::vector<CellState>> genlist(const std::vector<int> &info,
   return ret;
 }
 
-std::vector<std::vector<CellState>> solveNonogram(int h, int w,
-    const std::vector<std::vector<int>>& hinfo,
-    const std::vector<std::vector<int>>& winfo) {
+std::vector<std::vector<CellState>>
+solveNonogram(int h, int w, const std::vector<std::vector<int>> &hinfo,
+              const std::vector<std::vector<int>> &winfo) {
 
   std::vector<std::vector<CellState>> board(h, std::vector<CellState>(w, 0));
   bool ismodified = false;
